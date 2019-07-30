@@ -1,7 +1,7 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # dependencies
-/httpd-2.4.39-win64-VS16
+/Apache24
 /.history
 /php
 
