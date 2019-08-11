@@ -8,13 +8,10 @@ use App\Http\Controllers\Controller;
 use Input;
 use Illuminate\Support\Facades\Auth;
 use Response; //Response::makeのため
-// use DB;
 
-//[add]20181022 次の行を追加
 use App\Books;
 use App\Rent_logs;
 use App\Users;
-//[/add]20181022 次の行を追加
 
 class BooksController extends Controller
 {
@@ -31,7 +28,6 @@ class BooksController extends Controller
 
     public function index(Request $request)
     {
-      // $booksInfo = Books::all();
       // 現在認証されているユーザーの取得
       $userId = Auth::id();
       $userName = Auth::user()->name;
@@ -44,9 +40,8 @@ class BooksController extends Controller
                              ->RIGHTJOIN('books','books.id','=','rent_logs.book_id')
                              ->ORDERBY('books.id')->get();
 
-      // [add] ソート・検索機能で、どのテーブルから情報を取得するか（下準備）
+      // ソート・検索機能で、どのテーブルから情報を取得するか（下準備）
       $book = DB::TABLE('books');
-      // [/add] ソート・検索機能で、どのテーブルから情報を取得するか（下準備）
 
 // ソート機能 =====================================================
       // // IDでのソート機能
@@ -190,20 +185,14 @@ class BooksController extends Controller
       //                           ->get();
 
 
-      // [add] ソート・検索機能で、どのテーブルから情報を取得するか（下準備）
+      // ソート・検索機能で、どのテーブルから情報を取得するか（下準備）
       $book = DB::TABLE('books');
       $rent = DB::TABLE('rent_logs');
-      // [/add] ソート・検索機能で、どのテーブルから情報を取得するか（下準備）
 
-      // [add]最終的にどの条件でテーブルからGETするか確定させる
+      // 最終的にどの条件でテーブルからGETするか確定させる
       $books = $book->get();
       $rents = $rent->get();
-      // [/add]最終的にどの条件でテーブルからGETするか確定させる
 
-      // test return
-      // return view('library-old/libraryBorrowingList');
-      // return view('library/libraryBorrowingList');
-      // return $user;
       return view('library/libraryBorrowingList', ["books" => $books
                                                   ,'rents' => $rents
                                                   // ,'orderById'=>$orderById
@@ -221,10 +210,7 @@ class BooksController extends Controller
 
     public function bookSignUp()
     {
-
-      // 画面が開かれそうになったら一覧画面に飛ばされる。。
-      // return redirect('/libraryHome');
-
+      // 画面が開かれそうになったら一覧画面に飛ばす
       return view('library/libraryBookSignUp');
 
     }
@@ -236,7 +222,6 @@ class BooksController extends Controller
     * @param Request $request
     * @return \Illuminate\Http\Response
     */
-    // use Request;
 
     public function bookRegister(Request $request)
     {
@@ -264,23 +249,20 @@ class BooksController extends Controller
 
     public function bookEdit($id)
     {
-
       $rent_log = Rent_logs::all();
 
       $book = Books::find($id);
 
       $userName = Auth::user()->name;
 
-
-      // return $book;
-      // 画面が開かれそうになったら一覧画面に飛ばされる。。
-      // return redirect('/libraryHome');
+      // amazonでの商品情報を取得
+      $bookInfo=Books::info($id);
 
       return view('library/libraryBookEdit', ['book' => $book
                                              ,'rent_log' => $rent_log
                                              ,'userName' => $userName
                                            ]);
-
+                                       
     }
 
     /**
@@ -291,12 +273,10 @@ class BooksController extends Controller
 
     public function bookUpdate(Request $request)
     {
-      // [add]更新前の商品名のID情報を更新時に使用するため
+      // 更新前の商品名のID情報を更新時に使用するため
       $beforeBookId = $request->input('beforeBookId');
-      // [add]更新前の商品名のID情報を更新時に使用するため
       $bookName = $request->input('inputBookName');
 
-      // return $BeforeDrinkId;
       Books::where('id', $beforeBookId)->update([
         'name' => $bookName
       ]);
@@ -342,14 +322,6 @@ class BooksController extends Controller
         return response()->json([
             // "$bookId" => $bookId
         ]);
-      // }
-      // else
-      // {
-      // echo 'FAIL TO AJAX REQUEST';
-      // return response()->json([
-      //   'FAIL TO AJAX REQUEST'
-      // ]);
-      // }
 
     }
 
@@ -366,10 +338,7 @@ class BooksController extends Controller
 
       $returnDate = date("Y-m-d");
 
-      //   $str = "AJAX REQUEST SUCCESS\nuserId:".$userId."\npassword:".$pas."\n";
-      //   $result = nl2br($str);
-
-        Books::where('id', $bookId)->update([
+      Books::where('id', $bookId)->update([
           'status' => 0,
         ]);
         Rent_logs::where('book_id', $bookId)
@@ -378,8 +347,6 @@ class BooksController extends Controller
                    'return_date' => $returnDate
                           ]);
 
-
-        // return redirect('/libraryHome');
         return response()->json([
           'SUCCESS TO AJAX REQUEST:$bookId'
         ]);
@@ -404,19 +371,4 @@ class BooksController extends Controller
       return redirect('/libraryHome');
 
     }
-
-    // public function userInfoView()
-    // {
-    //   // 現在認証されているユーザーの取得
-    //   $user = Auth::user();
-    //
-    //   // 現在認証されているユーザーのID取得
-    //   $id = Auth::id();
-    //
-    //   if (Auth::check())
-    //   {
-    //     // ユーザーがログインしている場合に中身が実行
-    //   }
-    // }
-
 }
