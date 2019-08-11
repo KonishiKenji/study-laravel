@@ -13,6 +13,9 @@ use App\Books;
 use App\Rent_logs;
 use App\Users;
 
+// for AmazonProductInfoAPI
+use ApaiIO\Operations\Search;
+
 class BooksController extends Controller
 {
     /**
@@ -258,9 +261,27 @@ class BooksController extends Controller
       // amazonでの商品情報を取得
       $bookInfo=Books::info($id);
 
+      // 検索条件を設定する
+      $search = new Search();
+      $search->setCategory('Books');
+      $search->setSort('salesrank');
+      $search->setBrowseNode('637872');
+      $search->setResponseGroup(['Medium']);
+
+      // 検索実行。結果を$resに保存。
+      $res = \Apaiio::runOperation($search);
+
+      // 結果は10件ずつしか取れない。
+      // 2ページ目以降が欲しい時は検索条件に以下を追加して再検索する。
+      // $search->setItemPage(ページ番号);
+
+      // 総ページ数は以下で取得できる。
+      // $res->Items->TotalPages;
+
       return view('library/libraryBookEdit', ['book' => $book
                                              ,'rent_log' => $rent_log
                                              ,'userName' => $userName
+                                            //  ,'result'=>$res
                                            ]);
                                        
     }
