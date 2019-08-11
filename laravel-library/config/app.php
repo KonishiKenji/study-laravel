@@ -160,6 +160,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // amazon productInfoApi用の追記
+        Apaiio\Laravel\ApaiIOServiceProvider::class,
+
     ],
 
     /*
@@ -208,6 +211,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        // amazon productInfo API用
+        'Apaiio' => Apaiio\Laravel\ApaiIOFacade::class,
 
     ],
 
