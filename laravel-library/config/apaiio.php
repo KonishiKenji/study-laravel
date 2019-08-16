@@ -1,5 +1,5 @@
-<!-- amazon productInfo API用 -->
 <?php
+// amazon productInfo API用
 return [
     'AWS_API_KEY' => env('AWS_API_KEY', 'デフォルトのAPIキー'),
     'AWS_API_SECRET_KEY' => env('AWS_API_SECRET_KEY', 'デフォルトのシークレットキー'),
