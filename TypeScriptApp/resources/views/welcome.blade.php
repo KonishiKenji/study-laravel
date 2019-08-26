@@ -62,6 +62,7 @@
                 margin-bottom: 30px;
             }
         </style>
+        <script src="{{ mix('js/helloworld.js') }}"></script>
     </head>
     <body>
         <div class="flex-center position-ref full-height">
